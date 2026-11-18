@@ -1,0 +1,815 @@
+<meta charset="utf-8">
+<title>Terminologia Arquivística Conarq</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+/* Layout: arquivo de pastas — faixa verde-petróleo no topo, cada ramo da árvore com a sua cor de
+   pasta (aba colorida), definições em serifa de leitura e referências em tipo de máquina de escrever. */
+:root{
+  --bg:#eef1ef; --surface:#ffffff; --surface-2:#f4f6f5; --ink:#15201e; --ink-2:#41504c; --muted:#66746f;
+  --line:#dde4e1; --line-2:#c8d2ce;
+  --brand:#0d4a44; --brand-2:#14605a; --on-brand:#ffffff; --on-brand-2:#b8d9d3; --link:#0b6b60;
+  --hi:#f2c14e; --hi-soft:#fbf0cc; --hi-ink:#4d3a00;
+  --s-nuc:#00897b; --s-afi:#d08a00;
+  --r1:#cf3f4f; --r2:#2e6fd0; --r3:#1f8a5a; --r4:#7d4fc9; --r5:#c8641a; --r6:#0583a0; --r7:#a88400; --r8:#c2418a; --rX:#7b8784;
+  --ok:#17704a; --ok-soft:#ddf1e6; --warn:#8a5a00; --warn-soft:#fbefd2; --crit:#a83232; --crit-soft:#fae3e1;
+  --ff-ui:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --ff-read:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --ff-type:"Courier Prime","Courier New",ui-monospace,monospace;
+  --r:14px; --nav-h:64px; --shadow:0 1px 2px rgba(15,40,36,.06),0 2px 8px rgba(15,40,36,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1413; --surface:#141f1d; --surface-2:#1a2725; --ink:#e6eeeb; --ink-2:#b5c3bf; --muted:#8b9b97;
+  --line:#24312e; --line-2:#33423e;
+  --brand:#0f2f2b; --brand-2:#17423d; --on-brand:#e9f2ef; --on-brand-2:#9fc4bd; --link:#5cc4b6;
+  --hi:#f2c14e; --hi-soft:#3a3114; --hi-ink:#f7dc8f;
+  --s-nuc:#19a090; --s-afi:#c58716;
+  --r1:#e0606c; --r2:#4a86e0; --r3:#2f9f6c; --r4:#9474e0; --r5:#d9732a; --r6:#1a98b4; --r7:#a8860a; --r8:#d45e9e; --rX:#7f8f8b;
+  --ok:#76d0a2; --ok-soft:#14291f; --warn:#e8bd62; --warn-soft:#2c2414; --crit:#f08b84; --crit-soft:#321b1a;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0c1413; --surface:#141f1d; --surface-2:#1a2725; --ink:#e6eeeb; --ink-2:#b5c3bf; --muted:#8b9b97;
+  --line:#24312e; --line-2:#33423e;
+  --brand:#0f2f2b; --brand-2:#17423d; --on-brand:#e9f2ef; --on-brand-2:#9fc4bd; --link:#5cc4b6;
+  --hi:#f2c14e; --hi-soft:#3a3114; --hi-ink:#f7dc8f;
+  --s-nuc:#19a090; --s-afi:#c58716;
+  --r1:#e0606c; --r2:#4a86e0; --r3:#2f9f6c; --r4:#9474e0; --r5:#d9732a; --r6:#1a98b4; --r7:#a8860a; --r8:#d45e9e; --rX:#7f8f8b;
+  --ok:#76d0a2; --ok-soft:#14291f; --warn:#e8bd62; --warn-soft:#2c2414; --crit:#f08b84; --crit-soft:#321b1a;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--ff-ui);font-size:16px;line-height:1.5;
+  -webkit-text-size-adjust:100%;overflow-x:hidden;overflow-wrap:break-word;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--brand)}
+h1,h2,h3{font-family:var(--ff-ui);line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px;border-radius:6px}
+.type{font-family:var(--ff-type);font-variant-numeric:tabular-nums}
+.read{font-family:var(--ff-read)}
+
+/* ---------- barra superior ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--brand);color:var(--on-brand);
+  padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));
+  padding-block:8px;display:flex;align-items:center;gap:8px;min-height:58px}
+.brandmark{width:34px;height:34px;flex:none;display:block}
+.tb-main{min-width:0;flex:1;display:flex;flex-direction:column}
+.tb-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--on-brand-2);
+  font-stretch:110%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-title{font-size:19px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-back{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;flex:none;color:var(--on-brand)}
+.tb-back:hover,.icon-btn:hover{background:rgba(255,255,255,.1)}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;flex:none;color:var(--on-brand)}
+.icon-btn svg,.tb-back svg{width:23px;height:23px}
+
+/* ---------- faixa de abertura (início) ---------- */
+.hero{background:var(--brand);color:var(--on-brand);
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  padding-block:6px 26px}
+.hero-in{max-width:828px;margin:0 auto}
+.hero h2{font-size:clamp(27px,7.4vw,40px);font-weight:800;font-stretch:88%;letter-spacing:-.02em;line-height:1.05;max-width:16ch}
+.hero h2 em{font-style:normal;color:var(--hi)}
+.hero p{color:var(--on-brand-2);font-size:15px;margin-top:10px;max-width:46ch}
+.hero .search{margin-top:18px;margin-bottom:0;border-color:transparent;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 0;max-width:860px;margin:0 auto}
+main{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 30px)}
+
+/* ---------- abas ---------- */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:35;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px));display:flex}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 8px;
+  color:var(--muted);font-size:11.5px;font-weight:600;min-height:var(--nav-h);min-width:0}
+.tabbar .pill{width:56px;height:30px;border-radius:999px;display:grid;place-items:center;transition:background .15s}
+.tabbar svg{width:23px;height:23px}
+.tabbar button[aria-current="page"]{color:var(--ink)}
+.tabbar button[aria-current="page"] .pill{background:var(--hi);color:var(--hi-ink)}
+.side-brand{display:none;align-items:center;gap:10px;padding:4px 4px 22px;font-weight:750;font-size:15px;line-height:1.15;
+  font-stretch:92%}
+.tabbar span.lb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@media (min-width:880px){
+  .tabbar{top:0;bottom:0;right:auto;width:228px;flex-direction:column;border-top:none;border-right:1px solid var(--line);
+    padding-top:calc(env(safe-area-inset-top,0px) + 12px);gap:4px;padding-left:12px;padding-right:12px}
+  .side-brand{display:flex!important}
+  .topbar .brandmark{display:none}
+  .tabbar button{flex:none;flex-direction:row;gap:10px;font-size:15px;min-height:0;padding:4px;border-radius:999px}
+  .tabbar .pill{width:44px;height:34px}
+  .tabbar button[aria-current="page"]{background:var(--hi-soft)}
+  body{padding-left:228px}
+  body::before{left:228px}
+  main{padding-bottom:48px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:.01s!important}}
+
+/* ---------- peças ---------- */
+.sec{margin-bottom:30px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.sec-h h3{font-size:20px;font-weight:750;letter-spacing:-.01em;min-width:0}
+.sec-h .aside{font-size:13.5px;color:var(--muted)}
+.btn-link{color:var(--link);font-weight:600;font-size:14px;white-space:nowrap;flex:none}
+.search{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line-2);
+  border-radius:999px;padding:0 16px;height:52px;margin-bottom:14px;width:100%;color:var(--muted)}
+.search svg{width:21px;height:21px;flex:none}
+.search input{flex:1;min-width:0;border:none;background:none;font:inherit;font-size:16.5px;color:var(--ink);outline:none;height:100%}
+.search input::placeholder,.search .ph{color:var(--muted);font-size:16.5px}
+.search:focus-within{border-color:var(--link)}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.filters::-webkit-scrollbar{display:none}
+.filters select{font:inherit;font-size:14px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1.5px solid var(--line-2);
+  border-radius:999px;padding:8px 12px;max-width:230px;height:40px}
+.filters select.on{background:var(--hi-soft);border-color:var(--hi);color:var(--ink)}
+.count{font-size:14px;color:var(--muted);margin-bottom:12px}
+.count b{color:var(--ink);font-weight:700}
+
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:650;padding:4px 10px 4px 9px;border-radius:999px;
+  background:var(--surface-2);color:var(--ink-2);white-space:nowrap;line-height:1.3}
+.tag i{width:9px;height:9px;border-radius:3px;flex:none;background:var(--rc,var(--rX))}
+.tag.ramo{background:var(--surface-2);background:color-mix(in srgb,var(--rc) 13%,var(--surface))}
+.tag.nuc{background:color-mix(in srgb,var(--s-nuc) 15%,var(--surface));color:var(--ink)}
+.tag.afi{background:color-mix(in srgb,var(--s-afi) 18%,var(--surface));color:var(--ink)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.crit{background:var(--crit-soft);color:var(--crit)}
+.tag.dic{background:var(--ink);color:var(--surface)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;background:var(--rc,var(--rX));flex:none;display:inline-block}
+
+/* cartão de termo: pasta com aba na cor do ramo */
+.list{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.tcard{position:relative;display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+  border-radius:4px var(--r) var(--r) var(--r);padding:14px 15px 13px;box-shadow:var(--shadow);margin-top:6px}
+.tcard::before{content:"";position:absolute;left:-1px;top:-6px;width:48px;height:6px;border-radius:5px 5px 0 0;background:var(--rc,var(--rX))}
+.tcard:hover{border-color:var(--line-2)}
+.tc-name{font-size:19px;font-weight:700;letter-spacing:-.012em;line-height:1.2}
+.tc-gram{font-family:var(--ff-read);font-style:italic;font-size:14.5px;color:var(--muted);font-weight:400;margin-left:6px}
+.tc-def{font-family:var(--ff-read);font-size:16px;line-height:1.48;color:var(--ink-2);margin-top:6px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tc-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:10px;font-size:13.5px;color:var(--muted)}
+.tc-foot .sep{width:3px;height:3px;border-radius:50%;background:var(--line-2)}
+.more{width:100%;height:50px;margin-top:12px;border:1.5px solid var(--line-2);border-radius:999px;font-weight:650;color:var(--link);background:var(--surface)}
+.empty{text-align:center;color:var(--muted);padding:40px 12px;font-size:15px}
+mark{background:var(--hi);color:var(--hi-ink);border-radius:3px;padding:0 2px}
+
+/* ---------- início ---------- */
+.explore{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.xcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px 14px 14px;text-align:left;
+  display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow);min-width:0}
+.xcard .xi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--hi-soft);color:var(--hi-ink);margin-bottom:8px}
+.xcard .xi svg{width:23px;height:23px}
+.xcard b{font-size:30px;font-weight:800;font-stretch:90%;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.xcard .xl{font-size:15.5px;font-weight:700;margin-top:3px}
+.xcard .xh{font-size:13px;color:var(--muted);line-height:1.35}
+.ramos{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.rrow{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:12px;padding:11px 14px;text-align:left;border-top:1px solid var(--line)}
+.rrow:first-child{border-top:none}
+.rnum{width:36px;height:36px;border-radius:9px;background:var(--rc);color:#fff;display:grid;place-items:center;
+  font-weight:800;font-size:16px;font-stretch:90%}
+.rrow .rn{font-weight:650;font-size:15.5px;line-height:1.25;min-width:0}
+.rrow .rc{font-size:13px;color:var(--muted);text-align:right;white-space:nowrap}
+.rbar{height:5px;border-radius:3px;background:var(--surface-2);margin-top:6px;overflow:hidden}
+.rbar span{display:block;height:100%;border-radius:3px;background:var(--rc)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.kpi{background:var(--surface);padding:13px 14px;border:1px solid var(--line);border-radius:12px}
+.kpi b{display:block;font-size:26px;font-weight:800;font-stretch:90%;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted);display:block;margin-top:3px;line-height:1.3}
+
+/* gráficos */
+.chart{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:flex;flex-direction:column;gap:4px}
+.bar-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}
+.bar-top .bl{color:var(--ink-2);min-width:0;display:flex;align-items:center;gap:7px}
+.bar-top .bv{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:13.5px}
+.bar-top .bv small{font-weight:500;color:var(--muted)}
+.bar-track{display:flex;gap:2px;height:12px;background:var(--surface-2);border-radius:0 4px 4px 0}
+.bar-seg{height:100%;border-radius:0 4px 4px 0;min-width:2px}
+.bar-seg.first{border-radius:0}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px;color:var(--ink-2);margin-bottom:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px}
+.chart-card{padding:16px 15px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.5}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl-wrap{overflow-x:auto}
+
+/* ---------- árvore ---------- */
+.folder{background:var(--surface);border:1px solid var(--line);border-radius:4px var(--r) var(--r) var(--r);margin-top:12px;
+  position:relative;box-shadow:var(--shadow)}
+.folder::before{content:"";position:absolute;left:-1px;top:-8px;width:76px;height:8px;border-radius:6px 6px 0 0;background:var(--rc)}
+.fhead{display:grid;grid-template-columns:40px 1fr 30px;align-items:center;gap:12px;padding:13px 14px;width:100%;text-align:left}
+.fhead .rnum{width:40px;height:40px;font-size:18px}
+.fhead .fn{font-size:17px;font-weight:750;line-height:1.2}
+.fhead .fc{font-size:13px;color:var(--muted);font-weight:500;display:block;margin-top:2px}
+.chev{width:30px;height:30px;display:grid;place-items:center;color:var(--muted);transition:transform .18s}
+.chev svg{width:20px;height:20px}
+.open>.fhead .chev,.chev.open{transform:rotate(180deg)}
+.fbody{border-top:1px solid var(--line);padding:4px 0 6px}
+.node{position:relative}
+.nrow{display:flex;align-items:center;gap:4px;padding-right:8px}
+.nopen{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px;padding:10px 6px 10px 0;text-align:left}
+.ncode{font-family:var(--ff-type);font-size:13.5px;color:var(--muted);flex:none;min-width:44px;text-align:right}
+.nname{font-size:16px;font-weight:600;line-height:1.3;min-width:0}
+.nname small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:1px}
+.ntog{flex:none;height:32px;padding:0 8px 0 10px;border-radius:999px;display:flex;align-items:center;gap:3px;
+  font-size:13px;font-weight:650;color:var(--ink-2);background:var(--surface-2)}
+.ntog svg{width:16px;height:16px;transition:transform .18s}
+.ntog.open svg{transform:rotate(180deg)}
+.nkids{margin-left:36px;border-left:2px solid var(--line);border-left-color:color-mix(in srgb,var(--rc) 45%,transparent)}
+.lvl0>.nrow{padding-left:6px}
+.nkids .nrow{padding-left:4px}
+
+/* ---------- dicionário ---------- */
+.az{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:12px;margin-right:-16px;padding-right:16px}
+.az::-webkit-scrollbar{display:none}
+.az button{flex:none;width:38px;height:38px;border-radius:10px;font-weight:750;font-size:15px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.letter{font-size:30px;font-weight:800;font-stretch:85%;color:var(--link);padding:10px 2px 0;scroll-margin-top:80px}
+
+/* ---------- resoluções ---------- */
+.rcard{display:grid;grid-template-columns:62px 1fr;gap:14px;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.rno{border-radius:10px;background:color-mix(in srgb,var(--brand-2) 12%,var(--surface));display:flex;flex-direction:column;
+  align-items:center;justify-content:center;height:62px;color:var(--brand-2)}
+.rno small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.rno b{font-size:25px;font-weight:800;font-stretch:85%;line-height:1}
+.rcard.revog .rno{background:var(--surface-2);color:var(--muted)}
+.rmeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13.5px;color:var(--muted)}
+.rement{font-family:var(--ff-read);font-size:15.5px;line-height:1.45;color:var(--ink-2);margin-top:6px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- fichas ---------- */
+.dhead{background:var(--surface);border:1px solid var(--line);border-radius:4px var(--r) var(--r) var(--r);position:relative;
+  padding:18px 16px 16px;margin:8px 0 18px;box-shadow:var(--shadow);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 9%,var(--surface)),var(--surface) 70%)}
+.dhead::before{content:"";position:absolute;left:-1px;top:-8px;width:76px;height:8px;border-radius:6px 6px 0 0;background:var(--rc)}
+.dhead h2{font-size:clamp(27px,7.5vw,36px);font-weight:800;font-stretch:92%;letter-spacing:-.022em;margin:10px 0 4px}
+.dhead .gram{font-family:var(--ff-read);font-style:italic;color:var(--muted);font-size:16px}
+.dhead .tags{margin-top:12px}
+.prop{border-radius:var(--r);background:var(--hi-soft);padding:16px 16px 17px;margin-bottom:22px}
+.prop .lbl{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--hi-ink);margin-bottom:8px}
+.prop .lbl svg{width:17px;height:17px}
+.prop p{font-family:var(--ff-read);font-size:19px;line-height:1.5;color:var(--ink)}
+.path{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.path .pc{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:10px;background:var(--surface);
+  border:1px solid var(--line);font-size:14.5px;font-weight:600;text-align:left}
+.path .pc .type{font-size:12.5px;color:var(--muted);font-weight:400}
+.path .pc.here{background:color-mix(in srgb,var(--rc) 13%,var(--surface));border-color:color-mix(in srgb,var(--rc) 40%,var(--surface))}
+.path .arr{color:var(--muted);font-size:14px}
+.facts{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.fact{display:flex;justify-content:space-between;gap:14px;padding:11px 14px;border-top:1px solid var(--line);font-size:15px}
+.fact:first-child{border-top:none}
+.fact span{color:var(--muted)}
+.fact b{font-weight:650;text-align:right}
+.fields{display:flex;flex-direction:column;gap:16px;padding:16px}
+.field .lbl{font-size:12.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.field p{font-family:var(--ff-read);font-size:16px;line-height:1.5;white-space:pre-line}
+.field p.ref{font-family:var(--ff-type);font-size:14px;line-height:1.5;color:var(--ink-2)}
+.icard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.icard-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px dashed var(--line-2)}
+.icard-h .res{font-weight:750;font-size:15.5px;color:var(--link);text-align:left}
+.icard-h .res small{font-weight:500;color:var(--muted);font-size:13.5px}
+.icard-b{padding:13px 14px 14px}
+.icard-b .como{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+.icard-b .como b{color:var(--ink);font-weight:650}
+.icard-b blockquote{margin:0;font-family:var(--ff-read);font-size:17px;line-height:1.52}
+.icard-f{padding:10px 14px 12px;background:var(--surface-2);font-family:var(--ff-type);font-size:13px;line-height:1.55;color:var(--ink-2)}
+.icard-f div+div{margin-top:3px}
+.icard .tags{margin-top:10px}
+details.more-info summary{cursor:pointer;color:var(--link);font-weight:650;font-size:14px;list-style:none;padding:2px 0}
+details.more-info summary::-webkit-details-marker{display:none}
+.loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px;padding:14px 0}
+.spin{width:18px;height:18px;border:2.5px solid var(--line-2);border-top-color:var(--link);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.field p,.icard-f,.note,blockquote,.prop p,.tc-def,.rement,.fact b{overflow-wrap:anywhere}
+</style>
+<header class="topbar" id="topbar"></header>
+<main id="main"></main>
+<nav class="tabbar" id="tabbar" aria-label="Seções"></nav>
+
+<script>__CORE__</script>
+<script>
+(function(){
+"use strict";
+var C = window.CORE;
+
+/* ---------- utilidades ---------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function nz(s){return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();}
+function hl(text,q){
+  var t=String(text||''); if(!q) return esc(t);
+  var i=nz(t).indexOf(nz(q)); if(i<0) return esc(t);
+  return esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length));
+}
+function nfmt(n){return (n==null?'':String(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function pl(n,s,p){return n===1?s:p;}
+function cap(s){s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1);}
+
+/* ---------- índices ---------- */
+var A_COD=0,A_TERMO=1,A_RAMO=2,A_CLASS=3,A_OBS=4;
+var V_TERMO=0,V_PROP=1,V_DEFS=2,V_FONTE=3,V_CLASS=4,V_OUTRAS=5,V_ESCOPO=6,V_GRAM=7,V_LING=8,V_ANAL=9;
+var R_N=0,R_DATA=1,R_EMENTA=2,R_STATUS=3,R_ANEXO=4,R_TORIG=5,R_TVER=6,R_OC=7,R_ONDE=8,R_OBS=9;
+var T_TERMO=0,T_RAMO=1,T_ANEL=2,T_OC=3,T_NRES=4,T_RES=5,T_CONV=6,T_RED=7,T_DBTA=8,T_SEL=9,T_COD=10,T_IND=11,T_ENC=12,T_OBS=13,T_PREV=14;
+var O_TERMO=0,O_COMO=1,O_DEF=2,O_RES=3,O_DOC=4,O_LOCAL=5,O_TIPO=6,O_ANEL=7,O_SUP=8,
+    O_REPETE=9,O_ARTIGO=10,O_PERIODOS=11,O_EXEMPLOS=12,O_NEG=13,O_EXT=14,O_CONF=15,O_OUTRAS=16,O_FCIT=17,O_REL=18,O_OBS=19;
+
+var RAMO={}; C.ramos.forEach(function(r){RAMO[r.n]=r.nome;}); RAMO.X='Fora da árvore';
+var TERI={}, VERI={}, ARVI={}, ARVN={}, RESI={}, CRUZI={}, RESTERMS={}, ARVKIDS={}, RAMOCOUNT={};
+C.termos.forEach(function(r){TERI[nz(r[T_TERMO])]=r;});
+C.verbetes.forEach(function(r){VERI[nz(r[V_TERMO])]=r;});
+C.arvore.forEach(function(r){
+  ARVI[r[A_COD]]=r; if(!ARVN[nz(r[A_TERMO])]) ARVN[nz(r[A_TERMO])]=r;
+  var p=r[A_COD].indexOf('.')<0?'_':r[A_COD].slice(0,r[A_COD].lastIndexOf('.'));
+  (ARVKIDS[p]=ARVKIDS[p]||[]).push(r);
+  if(p!=='_'){ var rn=r[A_COD].split('.')[0]; RAMOCOUNT[rn]=(RAMOCOUNT[rn]||0)+1; }
+});
+C.resolucoes.forEach(function(r){RESI[r[R_N]]=r;});
+C.cruz.forEach(function(r){CRUZI[nz(r[1])]=r;});
+C.termos.forEach(function(t){
+  if(!t[T_RES]) return;
+  t[T_RES].split(/,\s*/).forEach(function(n){ n=n.trim(); if(n) (RESTERMS[n]=RESTERMS[n]||[]).push(t); });
+});
+function ramoDe(nome){
+  var k=nz(nome), a=ARVN[k], t=TERI[k];
+  if(a) return a[A_COD].split('.')[0];
+  if(t&&t[T_RAMO]) return t[T_RAMO];
+  return '';
+}
+function rc(n){ return '--rc:var(--r'+(n&&RAMO[n]?n:'X')+')'; }
+
+/* ocorrências: arquivo carregado sob demanda */
+var OC=null, OCI=null, ocPromise=null;
+function loadOC(){
+  if(OC) return Promise.resolve(OC);
+  if(!ocPromise) ocPromise=fetch('data/ocorrencias.json').then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status); return r.json();
+    }).then(function(j){
+      OC=j.rows; OCI={};
+      OC.forEach(function(o){ (OCI[nz(o[O_TERMO])]=OCI[nz(o[O_TERMO])]||[]).push(o); });
+      return OC;
+    });
+  return ocPromise;
+}
+
+/* ---------- ícones ---------- */
+var I={
+ inicio:'<path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-6h-5v6H5a1 1 0 01-1-1z"/>',
+ arvore:'<path d="M3 7.5A1.5 1.5 0 014.5 6H9l2 2h8.5A1.5 1.5 0 0121 9.5v9a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 18.5z"/><path d="M7 12.5h10M7 16h6"/>',
+ dicionario:'<path d="M5 4.5A1.5 1.5 0 016.5 3H19v15H6.5A1.5 1.5 0 005 19.5z"/><path d="M5 19.5A1.5 1.5 0 006.5 21H19v-3M9 7.5h6"/>',
+ termos:'<path d="M3.5 12.2V5a1.5 1.5 0 011.5-1.5h7.2l8.3 8.3a1.5 1.5 0 010 2.1l-6.4 6.4a1.5 1.5 0 01-2.1 0z"/><circle cx="8.3" cy="8.3" r="1.4"/>',
+ resolucoes:'<path d="M7 3h7l5 5v12a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v5h5M9.5 13h6M9.5 16.5h6"/>',
+ busca:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>',
+ volta:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+ baixo:'<path d="M6 9l6 6 6-6"/>',
+ pena:'<path d="M4 20l4.5-1 10-10a2.1 2.1 0 00-3-3l-10 10z"/><path d="M14 7l3 3"/>'
+};
+function ico(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[n]+'</svg>';}
+var MARK='<svg class="brandmark" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="var(--hi)"/>'+
+  '<path d="M7.5 11.2a1.8 1.8 0 011.8-1.8h4.6l2.1 2.2h8.7a1.8 1.8 0 011.8 1.8v9.4a1.8 1.8 0 01-1.8 1.8H9.3a1.8 1.8 0 01-1.8-1.8z" fill="var(--brand)"/>'+
+  '<rect x="11" y="15.4" width="12" height="2.2" rx="1.1" fill="var(--hi)"/><rect x="11" y="19.4" width="7.5" height="2.2" rx="1.1" fill="var(--hi)"/></svg>';
+
+/* ---------- estado ---------- */
+var TABS=[['inicio','Início'],['arvore','Árvore'],['dicionario','Dicionário'],['termos','Termos'],['resolucoes','Resoluções']];
+var VIEWS={inicio:'Início',arvore:'Árvore de domínio',dicionario:'Dicionário',termos:'Termos nas resoluções',
+  resolucoes:'Resoluções do Conarq',busca:'Busca',sobre:'Sobre esta base'};
+var st={view:'inicio',stack:[],q:{dicionario:'',termos:'',resolucoes:'',busca:''},
+  f:{ramo:'',anel:'',enc:'',conv:'',classe:'',status:''},
+  lim:{termos:50,busca:30}, open:{}, tbl:{}};
+
+function go(view){
+  st.view=view; st.stack=[];
+  if(location.hash.slice(1)!==view){ st.skipHash=true; location.hash=view; }
+  render(); scrollTop();
+}
+function push(entry){ entry.y=window.scrollY||0; st.stack.push(entry); render(); scrollTop(); }
+function back(){ var e=st.stack.pop(); render(); try{ window.scrollTo(0, st.stack.length?0:(e&&e.y)||0);}catch(x){} }
+function scrollTop(){ try{window.scrollTo(0,0);}catch(e){} }
+function openTermo(nome){ push({t:'termo',k:nome}); }
+function openRes(n){ push({t:'res',k:String(n)}); }
+
+/* ---------- gráficos ---------- */
+function bars(rows,opt){
+  opt=opt||{};
+  var max=0; rows.forEach(function(r){ var v=opt.stack?r[1]+r[2]:r[1]; if(v>max) max=v; }); if(!max) max=1;
+  return '<div class="chart">'+rows.map(function(r){
+    var label=(r[3]?'<i class="dot" style="'+r[3]+'"></i>':'')+'<span>'+esc(r[0])+'</span>';
+    if(opt.stack){
+      var a=r[1],b=r[2],tot=a+b;
+      return '<div class="bar-row"><div class="bar-top"><span class="bl">'+label+'</span><span class="bv">'+nfmt(tot)+
+        ' <small>('+nfmt(a)+' nucl. · '+nfmt(b)+' afim)</small></span></div>'+
+        '<div class="bar-track" style="background:none"><div style="display:flex;gap:2px;width:'+(tot/max*100).toFixed(2)+'%">'+
+        (a?'<div class="bar-seg first" style="flex:'+a+';background:var(--s-nuc)" title="Nuclear: '+a+'"></div>':'')+
+        (b?'<div class="bar-seg" style="flex:'+b+';background:var(--s-afi)" title="Afim: '+b+'"></div>':'')+'</div></div></div>';
+    }
+    return '<div class="bar-row"><div class="bar-top"><span class="bl">'+label+'</span><span class="bv">'+nfmt(r[1])+'</span></div>'+
+      '<div class="bar-track"><div class="bar-seg" style="width:'+(r[1]/max*100).toFixed(2)+'%;background:var(--s-nuc)" title="'+esc(r[0])+': '+nfmt(r[1])+'"></div></div></div>';
+  }).join('')+'</div>';
+}
+function chartSec(id,title,sub,rows,opt){
+  opt=opt||{};
+  var show=st.tbl[id], vis=opt.top&&!show?rows.slice(0,opt.top):rows;
+  var body;
+  if(show){
+    var cols=opt.stack?['Nuclear','Afim','Total']:[opt.unit||'Termos'];
+    body='<div class="tbl-wrap"><table><thead><tr><th>'+esc(opt.dim||'')+'</th>'+cols.map(function(c){return '<th class="n">'+esc(c)+'</th>';}).join('')+
+      '</tr></thead><tbody>'+rows.map(function(r){ return '<tr><td>'+esc(r[0])+'</td>'+(opt.stack
+        ?'<td class="n">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+(r[1]+r[2])+'</td>':'<td class="n">'+nfmt(r[1])+'</td>')+'</tr>';
+      }).join('')+'</tbody></table></div>';
+  } else {
+    body=(opt.stack?'<div class="legend"><span><i style="background:var(--s-nuc)"></i>Anel nuclear</span>'+
+      '<span><i style="background:var(--s-afi)"></i>Anel afim</span></div>':'')+bars(vis,opt);
+  }
+  return '<section class="sec"><div class="sec-h"><h3>'+esc(title)+'</h3><button class="btn-link" data-tbl="'+id+'">'+
+    (show?'Ver gráfico':(opt.top&&rows.length>opt.top?'Ver todos':'Ver tabela'))+'</button></div>'+
+    (sub?'<p class="note" style="margin:-6px 0 12px">'+esc(sub)+'</p>':'')+
+    '<div class="card chart-card">'+body+(opt.nota?'<p class="note" style="margin-top:14px">'+esc(opt.nota)+'</p>':'')+'</div></section>';
+}
+
+/* ---------- peças de lista ---------- */
+function ramoTag(n){ return n?'<span class="tag ramo" style="'+rc(n)+'"><i></i>'+esc(RAMO[n]||'')+'</span>':''; }
+function anelTag(a){ return a==='nuclear'?'<span class="tag nuc">Nuclear</span>':a==='afim'?'<span class="tag afi">Afim</span>':''; }
+var ENC_CLS={'Harmonizar':'warn','Cotejar com a norma':'warn','Decidir situação':'warn','Candidato prioritário':'ok','Desconsiderar':'crit'};
+function encTag(e){ return e&&e!=='Anel afim'?'<span class="tag '+(ENC_CLS[e]||'')+'">'+esc(e)+'</span>':''; }
+function statusTag(s){ return '<span class="tag '+(s==='Ativa'?'ok':'crit')+'">'+esc(s)+'</span>'; }
+function searchBox(key,ph){
+  return '<label class="search">'+ico('busca')+'<input id="q-'+key+'" type="search" autocomplete="off" enterkeyhint="search" '+
+    'placeholder="'+esc(ph)+'" value="'+esc(st.q[key])+'" data-q="'+key+'" aria-label="'+esc(ph)+'"></label>';
+}
+function sel(id,label,opts,val){
+  return '<select id="f-'+id+'" data-f="'+id+'" aria-label="'+esc(label)+'"'+(val?' class="on"':'')+'><option value="">'+esc(label)+'</option>'+
+    opts.map(function(o){ return '<option value="'+esc(o[0])+'"'+(o[0]===val?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</select>';
+}
+function moreBtn(key,shown,total){
+  return shown<total?'<button class="more" data-more="'+key+'">Mostrar mais '+Math.min(50,total-shown)+' de '+nfmt(total-shown)+'</button>':'';
+}
+function termoCard(t,q){
+  var v=VERI[nz(t[T_TERMO])], n=t[T_RAMO]==='X'?'':t[T_RAMO], a=ARVN[nz(t[T_TERMO])];
+  var nres=t[T_NRES]||0;
+  return '<button class="tcard" style="'+rc(n||(a&&a[A_COD].split('.')[0]))+'" data-termo="'+esc(t[T_TERMO])+'">'+
+    '<div class="tc-name">'+hl(t[T_TERMO],q)+'</div>'+
+    (t[T_PREV]?'<p class="tc-def">'+esc(t[T_PREV])+'</p>':'')+
+    '<div class="tc-foot">'+ramoTag(n)+anelTag(t[T_ANEL])+encTag(t[T_ENC])+(v?'<span class="tag dic">No dicionário</span>':'')+
+    '<span>'+(nres?'em '+nres+' '+pl(nres,'resolução','resoluções'):'')+'</span></div></button>';
+}
+
+/* ---------- INÍCIO ---------- */
+function heroInicio(){
+  return '<div class="hero"><div class="hero-in"><h2>Dicionário de <em>Terminologia Arquivística</em></h2>'+
+    '<p>Aplicativo desenvolvido pela <b style="color:var(--on-brand)">Câmara Técnica de Terminologia Arquivística</b>. Reúne a árvore de domínio, '+
+    'os verbetes em construção e as definições encontradas nas resoluções do Conarq.</p>'+
+    '<button class="search" data-fakesearch="1">'+ico('busca')+'<span class="ph">Buscar um termo ou resolução</span></button></div></div>';
+}
+function vInicio(){
+  var k=C.kpis, g=C.graficos, maxR=0; C.ramos.forEach(function(r){ if((RAMOCOUNT[r.n]||0)>maxR) maxR=RAMOCOUNT[r.n]; });
+  var h='<section class="sec"><div class="explore">'+
+    [['arvore','arvore',C.arvore.length-8,'Árvore de domínio','Os termos organizados em 8 ramos'],
+     ['dicionario','dicionario',C.verbetes.length,'Dicionário','Verbetes com proposta de definição'],
+     ['termos','termos',C.termos.length,'Termos','Definidos nas resoluções do Conarq'],
+     ['resolucoes','resolucoes',C.resolucoes.length,'Resoluções','Examinadas no diagnóstico']].map(function(x){
+      return '<button class="xcard" data-go="'+x[0]+'"><span class="xi">'+ico(x[1])+'</span><b>'+nfmt(x[2])+'</b>'+
+        '<span class="xl">'+esc(x[3])+'</span><span class="xh">'+esc(x[4])+'</span></button>';
+    }).join('')+'</div></section>';
+  h+='<section class="sec"><div class="sec-h"><h3>Ramos da árvore</h3><span class="aside">termos na árvore</span></div><div class="ramos">'+
+    C.ramos.map(function(r){ var c=RAMOCOUNT[r.n]||0;
+      return '<button class="rrow" style="'+rc(r.n)+'" data-ramo="'+r.n+'"><span class="rnum">'+r.n+'</span>'+
+        '<span class="rn">'+esc(r.nome)+'<span class="rbar"><span style="width:'+(c/maxR*100).toFixed(1)+'%"></span></span></span>'+
+        '<span class="rc"><b style="color:var(--ink);font-size:16px">'+c+'</b></span></button>';
+    }).join('')+'</div></section>';
+  h+='<section class="sec"><div class="sec-h"><h3>O diagnóstico em números</h3></div><div class="kpis">'+
+    k.map(function(x){return '<div class="kpi"><b>'+nfmt(x[1])+'</b><span>'+esc(x[0])+'</span></div>';}).join('')+'</div></section>';
+  h+=chartSec('ramo','Termos das resoluções, por ramo','Quantos termos definidos nas resoluções caem em cada ramo, separando o anel nuclear do afim.',
+    g.ramo_anel.map(function(r){return [RAMO[r[0]]||r[0],r[1],r[2],rc(r[0])];}),{stack:true,dim:'Ramo',
+    nota:'Não inclui os 45 registros classificados como fora da árvore.'});
+  h+=chartSec('enc','O que fazer com cada termo nuclear','Encaminhamento sugerido no diagnóstico.',g.encaminhamento,{dim:'Encaminhamento'});
+  h+=chartSec('conv','As definições concordam entre si?','Comparação das redações de um mesmo termo em resoluções diferentes.',g.convergencia,{dim:'Situação'});
+  h+=chartSec('porres','Resoluções com mais definições','',g.por_res.map(function(r){return ['Resolução nº '+r[0],r[1]];}),
+    {dim:'Resolução',unit:'Ocorrências',top:8,nota:g.notaRes});
+  h+=chartSec('tipo','Onde as definições aparecem','Parte do documento em que cada definição foi encontrada.',g.tipo,{dim:'Tipo',unit:'Ocorrências'});
+  h+=chartSec('formais','Problemas de redação','Triagem automática inspirada na ISO 704.',g.formais,{dim:'Indicador',unit:'Ocorrências'});
+  h+='<section class="sec"><div class="sec-h"><h3>Outros indicadores</h3></div><div class="card" style="padding:2px 14px">'+
+    '<div class="tbl-wrap"><table><tbody>'+g.outros.map(function(r){
+      return '<tr><td>'+esc(r[0])+'</td><td class="n"><b>'+nfmt(r[1])+'</b></td></tr>';}).join('')+'</tbody></table></div></div></section>';
+  return h;
+}
+
+/* ---------- ÁRVORE ---------- */
+function nodes(parent,lvl){
+  return (ARVKIDS[parent]||[]).map(function(n){
+    var cod=n[A_COD], kids=ARVKIDS[cod], op=!!st.open[cod], t=TERI[nz(n[A_TERMO])], cz=CRUZI[nz(n[A_TERMO])];
+    var oc=t?t[T_NRES]:(cz?(cz[5]?cz[5].split(',').length:0):0);
+    var sub=[n[A_CLASS]?n[A_CLASS].replace(' / ','/'):'', oc?'em '+oc+' '+pl(oc,'resolução','resoluções'):''].filter(Boolean).join(' · ');
+    return '<div class="node'+(lvl===0?' lvl0':'')+'"><div class="nrow">'+
+      '<button class="nopen" data-termo="'+esc(n[A_TERMO])+'"><span class="ncode">'+esc(cod)+'</span>'+
+      '<span class="nname">'+esc(n[A_TERMO])+(sub?'<small>'+esc(sub)+'</small>':'')+'</span></button>'+
+      (kids?'<button class="ntog'+(op?' open':'')+'" data-tog="'+esc(cod)+'" aria-expanded="'+op+'" aria-label="'+(op?'Fechar':'Abrir')+
+        ' subordinados de '+esc(n[A_TERMO])+'">'+kids.length+ico('baixo')+'</button>':'')+'</div>'+
+      (kids&&op?'<div class="nkids">'+nodes(cod,lvl+1)+'</div>':'')+'</div>';
+  }).join('');
+}
+function vArvore(){
+  var allOpen=C.ramos.every(function(r){return st.open['R'+r.n];});
+  return '<div class="sec-h" style="margin-bottom:4px"><p class="note" style="max-width:52ch">Versão 0.2. Cada termo ocupa uma só posição. '+
+    'Toque no nome para abrir a ficha.</p><button class="btn-link" data-tree="'+(allOpen?'close':'open')+'">'+(allOpen?'Fechar todos':'Abrir todos')+'</button></div>'+
+    C.ramos.map(function(r){ var op=!!st.open['R'+r.n], c=RAMOCOUNT[r.n]||0;
+      return '<div class="folder'+(op?' open':'')+'" style="'+rc(r.n)+'" id="ramo-'+r.n+'"><button class="fhead" data-tog="R'+r.n+'" aria-expanded="'+op+'">'+
+        '<span class="rnum">'+r.n+'</span><span><span class="fn">'+esc(r.nome)+'</span><span class="fc">'+c+' '+pl(c,'termo','termos')+'</span></span>'+
+        '<span class="chev">'+ico('baixo')+'</span></button>'+(op?'<div class="fbody">'+nodes(r.n,0)+'</div>':'')+'</div>';
+    }).join('');
+}
+
+/* ---------- DICIONÁRIO ---------- */
+function classeBase(c){ c=(c||'').split('\n')[0].replace(/^\d\.\s*/,'').replace(/\s*\?+$/,'').trim(); return c==='Tipo / Espécie'?'Tipo/Espécie':c; }
+function letra(s){ return nz(s).charAt(0).toUpperCase(); }
+function vDicionario(){
+  var q=st.q.dicionario, nq=nz(q), fc=st.f.classe, classes={};
+  C.verbetes.forEach(function(v){var c=classeBase(v[V_CLASS]); if(c) classes[c]=(classes[c]||0)+1;});
+  var rows=C.verbetes.filter(function(v){
+    if(fc&&classeBase(v[V_CLASS])!==fc) return false;
+    return !nq||nz(v[V_TERMO]).indexOf(nq)>=0||nz(v[V_PROP]).indexOf(nq)>=0||nz(v[V_OUTRAS]).indexOf(nq)>=0;
+  }).sort(function(a,b){return nz(a[V_TERMO]).localeCompare(nz(b[V_TERMO]),'pt');});
+  var letras=[]; rows.forEach(function(v){ var L=letra(v[V_TERMO]); if(letras.indexOf(L)<0) letras.push(L); });
+  var h=searchBox('dicionario','Buscar no dicionário')+
+    '<div class="filters">'+sel('classe','Todas as classificações',Object.keys(classes).sort().map(function(c){return [c,c+' ('+classes[c]+')'];}),fc)+'</div>';
+  if(!rows.length) return h+'<p class="empty">Nenhum verbete encontrado.</p>';
+  h+='<p class="count"><b>'+rows.length+'</b> '+pl(rows.length,'verbete','verbetes')+'</p>';
+  if(!nq&&letras.length>3) h+='<div class="az">'+letras.map(function(L){return '<button data-az="'+L+'">'+L+'</button>';}).join('')+'</div>';
+  var cur='', out='';
+  rows.forEach(function(v){
+    var L=letra(v[V_TERMO]);
+    if(L!==cur){ if(cur) out+='</div>'; cur=L; out+='<div class="letter" id="L-'+L+'">'+L+'</div><div class="list">'; }
+    var n=ramoDe(v[V_TERMO]), gram=(v[V_GRAM]||'').split('\n')[0];
+    out+='<button class="tcard" style="'+rc(n)+'" data-termo="'+esc(v[V_TERMO])+'"><div class="tc-name">'+hl(v[V_TERMO],q)+
+      (gram?'<span class="tc-gram">'+esc(gram.toLowerCase())+'</span>':'')+'</div>'+
+      (v[V_PROP]?'<p class="tc-def">'+hl(v[V_PROP],nz(v[V_TERMO]).indexOf(nq)<0?q:'')+'</p>':'')+
+      '<div class="tc-foot">'+ramoTag(n)+(classeBase(v[V_CLASS])?'<span>'+esc(classeBase(v[V_CLASS]))+'</span>':'')+'</div></button>';
+  });
+  return h+out+'</div>';
+}
+
+/* ---------- TERMOS ---------- */
+function uniq(idx){ var m={}; C.termos.forEach(function(t){ if(t[idx]) m[t[idx]]=(m[t[idx]]||0)+1; }); return m; }
+function vTermos(){
+  var q=st.q.termos, nq=nz(q), f=st.f;
+  var rows=C.termos.filter(function(t){
+    if(f.ramo&&t[T_RAMO]!==f.ramo) return false;
+    if(f.anel&&t[T_ANEL]!==f.anel) return false;
+    if(f.enc&&t[T_ENC]!==f.enc) return false;
+    if(f.conv&&t[T_CONV]!==f.conv) return false;
+    return !nq||nz(t[T_TERMO]).indexOf(nq)>=0;
+  });
+  if(nq) rows.sort(function(a,b){ return (nz(a[T_TERMO]).indexOf(nq)===0?0:1)-(nz(b[T_TERMO]).indexOf(nq)===0?0:1); });
+  var enc=uniq(T_ENC), conv=uniq(T_CONV), lim=st.lim.termos, shown=rows.slice(0,lim), any=f.ramo||f.anel||f.enc||f.conv;
+  return searchBox('termos','Buscar entre '+nfmt(C.termos.length)+' termos')+
+    '<div class="filters">'+sel('ramo','Todos os ramos',C.ramos.map(function(r){return [r.n,r.n+'. '+r.nome];}).concat([['X','Fora da árvore']]),f.ramo)+
+    sel('anel','Nuclear e afim',[['nuclear','Só anel nuclear'],['afim','Só anel afim']],f.anel)+
+    sel('enc','Qualquer encaminhamento',Object.keys(enc).sort().map(function(e){return [e,e+' ('+enc[e]+')'];}),f.enc)+
+    sel('conv','Qualquer convergência',Object.keys(conv).sort().map(function(e){return [e,e+' ('+conv[e]+')'];}),f.conv)+'</div>'+
+    '<p class="count"><b>'+nfmt(rows.length)+'</b> '+pl(rows.length,'termo','termos')+(any?' · <button class="btn-link" data-clear="1">limpar filtros</button>':'')+'</p>'+
+    (rows.length?'<div class="list">'+shown.map(function(t){return termoCard(t,q);}).join('')+'</div>'+moreBtn('termos',shown.length,rows.length)
+      :'<p class="empty">Nenhum termo com esses critérios.</p>');
+}
+
+/* ---------- RESOLUÇÕES ---------- */
+function resCard(r,q){
+  return '<button class="rcard'+(r[R_STATUS]==='Revogada'?' revog':'')+'" data-res="'+esc(r[R_N])+'"><span class="rno"><small>nº</small><b>'+esc(r[R_N])+'</b></span>'+
+    '<span style="min-width:0"><span class="rmeta"><span>'+esc(r[R_DATA])+'</span>'+statusTag(r[R_STATUS])+'</span>'+
+    '<p class="rement">'+hl(r[R_EMENTA],q)+'</p><span class="rmeta" style="margin-top:8px">'+
+    (r[R_OC]?'<b style="color:var(--ink)">'+r[R_OC]+'</b> '+pl(r[R_OC],'definição compilada','definições compiladas'):'Sem terminologia definida')+'</span></span></button>';
+}
+function vResolucoes(){
+  var q=st.q.resolucoes, nq=nz(q), fs=st.f.status;
+  var rows=C.resolucoes.filter(function(r){
+    if((fs==='Ativa'||fs==='Revogada')&&r[R_STATUS]!==fs) return false;
+    if(fs==='term'&&!r[R_OC]) return false;
+    return !nq||nz(r[R_EMENTA]).indexOf(nq)>=0||r[R_N]===q.trim();
+  });
+  return searchBox('resolucoes','Buscar por número ou assunto')+
+    '<div class="filters">'+sel('status','Todas as resoluções',[['Ativa','Só as ativas'],['Revogada','Só as revogadas'],['term','Com terminologia']],fs)+'</div>'+
+    '<p class="count"><b>'+rows.length+'</b> '+pl(rows.length,'resolução','resoluções')+'</p>'+
+    (rows.length?'<div class="list">'+rows.map(function(r){return resCard(r,q);}).join('')+'</div>':'<p class="empty">Nenhuma resolução encontrada.</p>');
+}
+
+/* ---------- BUSCA ---------- */
+function vBusca(){
+  var q=st.q.busca, nq=nz(q), h=searchBox('busca','Buscar termo, verbete ou resolução');
+  if(nq.length<2) return h+'<p class="empty">Digite pelo menos duas letras.<br>A busca cobre os '+nfmt(C.termos.length)+' termos, os '+
+    C.verbetes.length+' verbetes do dicionário e as '+C.resolucoes.length+' resoluções.</p>';
+  var ts=C.termos.filter(function(t){return nz(t[T_TERMO]).indexOf(nq)>=0;})
+    .sort(function(a,b){return (nz(a[T_TERMO]).indexOf(nq)===0?0:1)-(nz(b[T_TERMO]).indexOf(nq)===0?0:1)||b[T_OC]-a[T_OC];});
+  var vs=C.verbetes.filter(function(v){return !TERI[nz(v[V_TERMO])]&&nz(v[V_TERMO]).indexOf(nq)>=0;});
+  var dv=C.verbetes.filter(function(v){return nz(v[V_TERMO]).indexOf(nq)<0&&nz(v[V_PROP]).indexOf(nq)>=0;});
+  var rs=C.resolucoes.filter(function(r){return nz(r[R_EMENTA]).indexOf(nq)>=0||r[R_N]===q.trim();});
+  if(!ts.length&&!vs.length&&!dv.length&&!rs.length) return h+'<p class="empty">Nada encontrado para “'+esc(q)+'”.</p>';
+  var lim=st.lim.busca;
+  if(ts.length||vs.length) h+='<section class="sec"><div class="sec-h"><h3>Termos</h3><span class="aside">'+(ts.length+vs.length)+'</span></div><div class="list">'+
+    vs.map(function(v){ var n=ramoDe(v[V_TERMO]); return '<button class="tcard" style="'+rc(n)+'" data-termo="'+esc(v[V_TERMO])+'"><div class="tc-name">'+hl(v[V_TERMO],q)+
+      '</div><p class="tc-def">'+esc(v[V_PROP])+'</p><div class="tc-foot">'+ramoTag(n)+'<span class="tag dic">No dicionário</span></div></button>';}).join('')+
+    ts.slice(0,lim).map(function(t){return termoCard(t,q);}).join('')+'</div>'+moreBtn('busca',Math.min(lim,ts.length),ts.length)+'</section>';
+  if(dv.length) h+='<section class="sec"><div class="sec-h"><h3>Aparece em definições</h3><span class="aside">'+dv.length+'</span></div><div class="list">'+
+    dv.slice(0,20).map(function(v){ var n=ramoDe(v[V_TERMO]); return '<button class="tcard" style="'+rc(n)+'" data-termo="'+esc(v[V_TERMO])+'"><div class="tc-name">'+esc(v[V_TERMO])+
+      '</div><p class="tc-def">'+hl(v[V_PROP],q)+'</p></button>';}).join('')+'</div></section>';
+  if(rs.length) h+='<section class="sec"><div class="sec-h"><h3>Resoluções</h3><span class="aside">'+rs.length+'</span></div><div class="list">'+
+    rs.map(function(r){return resCard(r,q);}).join('')+'</div></section>';
+  return h;
+}
+
+/* ---------- FICHA DO TERMO ---------- */
+function field(lbl,val,ref){ return val?'<div class="field"><div class="lbl">'+esc(lbl)+'</div><p'+(ref?' class="ref"':'')+'>'+esc(val)+'</p></div>':''; }
+function fact(lbl,val){ return val!==''&&val!=null?'<div class="fact"><span>'+esc(lbl)+'</span><b>'+val+'</b></div>':''; }
+function ocCard(o){
+  var ind=[[O_REPETE,'Repete o termo'],[O_ARTIGO,'Começa com artigo ou verbo'],[O_PERIODOS,'Mais de um período'],
+           [O_EXEMPLOS,'Traz exemplos'],[O_NEG,'Formulação negativa']].filter(function(x){return o[x[0]];});
+  var r=RESI[o[O_RES]], ano=r?r[R_DATA].replace(/^.* de (\d{4})$/,'$1'):'';
+  var extra=[o[O_SUP]?'Termo superordenado: '+o[O_SUP]:'', o[O_FCIT]?'Fonte citada: '+o[O_FCIT]:'', o[O_OUTRAS]?'Outras denominações: '+o[O_OUTRAS]:'',
+    o[O_REL]?'Relação: '+o[O_REL]:'', o[O_EXT]?'Extensão: '+o[O_EXT]+' palavras'+(o[O_CONF]?' · conferência literal: '+o[O_CONF]:''):'',
+    o[O_OBS]?'Observação: '+o[O_OBS]:''].filter(Boolean);
+  return '<article class="icard"><div class="icard-h"><button class="res" data-res="'+esc(o[O_RES])+'">Resolução nº '+esc(o[O_RES])+
+    (ano?' <small>· '+esc(ano)+'</small>':'')+'</button><span class="tag">'+esc(o[O_TIPO])+'</span></div>'+
+    '<div class="icard-b">'+(o[O_COMO]&&nz(o[O_COMO])!==nz(o[O_TERMO])?'<p class="como">Como aparece no texto: <b>'+esc(o[O_COMO])+'</b></p>':'')+
+    '<blockquote>'+esc(o[O_DEF])+'</blockquote>'+
+    (ind.length?'<div class="tags">'+ind.map(function(x){return '<span class="tag warn">'+esc(x[1])+'</span>';}).join('')+'</div>':'')+'</div>'+
+    '<div class="icard-f"><div>'+esc(o[O_DOC])+(o[O_LOCAL]?' — '+esc(o[O_LOCAL]):'')+'</div>'+
+    (extra.length?'<details class="more-info" style="margin-top:6px"><summary>Mais detalhes</summary>'+extra.map(function(x){return '<div>'+esc(x)+'</div>';}).join('')+'</details>':'')+
+    '</div></article>';
+}
+function vTermo(nome){
+  var k=nz(nome), t=TERI[k], v=VERI[k], a=ARVN[k], cz=CRUZI[k];
+  var cod=(a&&a[A_COD])||(t&&t[T_COD])||(cz&&cz[0])||'';
+  var n=cod?cod.split('.')[0]:(t&&t[T_RAMO]!=='X'?t[T_RAMO]:'');
+  var titulo=v?v[V_TERMO]:(t?t[T_TERMO]:(a?a[A_TERMO]:nome)), gram=v?(v[V_GRAM]||'').split('\n')[0]:'';
+  if(!t&&!v&&!a) return '<p class="empty">Termo não encontrado na base.</p>';
+  var h='<div class="dhead" style="'+rc(n)+'">'+(n?ramoTag(n):'<span class="tag">Fora da árvore</span>')+
+    '<h2>'+esc(cap(titulo))+'</h2>'+(gram?'<p class="gram">'+esc(gram.toLowerCase())+'</p>':'')+
+    '<div class="tags">'+(t?anelTag(t[T_ANEL])+encTag(t[T_ENC]):'')+(v?'<span class="tag dic">No dicionário</span>':'')+'</div></div>';
+  if(v&&v[V_PROP]) h+='<div class="prop"><div class="lbl">'+ico('pena')+'Proposta de definição</div><p>'+esc(v[V_PROP])+'</p></div>';
+  if(cod){
+    var parts=cod.split('.'), path=[];
+    for(var i=1;i<=parts.length;i++){ var c=parts.slice(0,i).join('.'), nd=ARVI[c]; if(nd) path.push([c,nd[A_TERMO]]); }
+    h+='<section class="sec"><div class="sec-h"><h3>Onde fica na árvore</h3></div><div class="path">'+
+      path.map(function(p,i){ var last=i===path.length-1, root=i===0;
+        return (i?'<span class="arr">›</span>':'')+'<button class="pc'+(last?' here':'')+'" style="'+rc(n)+'" '+
+          (root?'data-ramo="'+n+'"':last?'disabled':'data-termo="'+esc(p[1])+'"')+'><span class="type">'+esc(p[0])+'</span>'+
+          esc(root?RAMO[n]:p[1])+'</button>';
+      }).join('')+'</div>'+
+      (ARVKIDS[cod]?'<p class="note" style="margin:14px 0 8px">Termos subordinados</p><div class="path">'+ARVKIDS[cod].map(function(x){
+        return '<button class="pc" data-termo="'+esc(x[A_TERMO])+'"><span class="type">'+esc(x[A_COD])+'</span>'+esc(x[A_TERMO])+'</button>';}).join('')+'</div>':'')+
+      (a&&a[A_OBS]?'<p class="note" style="margin-top:12px">'+esc(a[A_OBS])+'</p>':'')+'</section>';
+  }
+  if(t){
+    h+='<section class="sec"><div class="sec-h"><h3>Nas resoluções do Conarq</h3></div><div class="facts">'+
+      fact('Definido em',t[T_NRES]+' '+pl(t[T_NRES],'resolução','resoluções')+(t[T_RES]?' <span style="color:var(--muted);font-weight:400">(nº '+esc(t[T_RES])+')</span>':''))+
+      fact('Definições encontradas',t[T_OC])+fact('Redações diferentes',t[T_RED])+fact('As definições',esc(t[T_CONV]))+
+      fact('Consta no DBTA',esc(t[T_DBTA]))+fact('Situação no dicionário',esc(t[T_SEL]))+fact('Encaminhamento',esc(t[T_ENC]))+
+      (t[T_IND]?fact('Problemas de redação',t[T_IND]):'')+'</div>'+
+      (t[T_OBS]?'<p class="note" style="margin-top:10px">'+esc(t[T_OBS])+'</p>':'')+'</section>';
+  } else {
+    h+='<section class="sec"><p class="note">Este termo não aparece definido nas resoluções do Conarq examinadas no diagnóstico.</p></section>';
+  }
+  if(v){
+    h+='<section class="sec"><div class="sec-h"><h3>Verbete do dicionário</h3></div><div class="card fields">'+
+      field('Definições recolhidas',v[V_DEFS])+field('Fonte',v[V_FONTE],1)+field('Classificação',v[V_CLASS])+
+      field('Outras denominações',v[V_OUTRAS])+field('Nota de escopo',v[V_ESCOPO])+field('Gramática',v[V_GRAM])+
+      field('Em outras línguas',v[V_LING])+field('Análise',v[V_ANAL])+'</div></section>';
+  }
+  if(t){
+    h+='<section class="sec"><div class="sec-h"><h3>Definições nas resoluções</h3><span class="aside">'+t[T_OC]+'</span></div>';
+    if(OC){
+      h+='<div class="list">'+(OCI[k]||[]).slice().sort(function(x,y){return (+x[O_RES])-(+y[O_RES]);}).map(ocCard).join('')+'</div>';
+    } else {
+      h+='<div class="loading" id="oc-loading"><span class="spin"></span>Carregando as definições…</div>';
+      loadOC().then(function(){ var top=st.stack[st.stack.length-1]; if(top&&top.t==='termo'&&nz(top.k)===k) render(); })
+        .catch(function(){ var el=document.getElementById('oc-loading');
+          if(el) el.textContent='Não foi possível carregar as definições. Confira a conexão e abra o termo de novo.'; ocPromise=null; });
+    }
+    h+='</section>';
+  }
+  return h;
+}
+
+/* ---------- FICHA DA RESOLUÇÃO ---------- */
+function vRes(n){
+  var r=RESI[n]; if(!r) return '<p class="empty">Resolução não encontrada.</p>';
+  var ts=(RESTERMS[n]||[]).slice().sort(function(a,b){return nz(a[T_TERMO]).localeCompare(nz(b[T_TERMO]),'pt');});
+  var h='<div class="dhead" style="--rc:var(--brand-2)"><div class="tags">'+statusTag(r[R_STATUS])+'<span class="tag">'+esc(r[R_DATA])+'</span></div>'+
+    '<h2>Resolução nº '+esc(r[R_N])+'</h2></div>'+
+    '<div class="card" style="padding:16px;margin-bottom:22px"><div class="field"><div class="lbl">Ementa</div><p style="font-size:18px">'+esc(r[R_EMENTA])+'</p></div></div>'+
+    '<section class="sec"><div class="facts">'+fact('Definições compiladas',r[R_OC])+fact('Termos definidos',ts.length)+
+    fact('Onde está a terminologia',esc(r[R_ONDE]||'—'))+fact('Tem anexo',esc(r[R_ANEXO]||'—'))+
+    fact('Terminologia verificada',esc(r[R_TVER]||'—'))+fact('Na planilha de origem',esc(r[R_TORIG]||'—'))+'</div>'+
+    (r[R_OBS]?'<p class="note" style="margin-top:10px">'+esc(r[R_OBS])+'</p>':'')+'</section>';
+  if(ts.length){
+    var key='res'+n, lim=st.lim[key]||30;
+    h+='<section class="sec"><div class="sec-h"><h3>Termos definidos</h3><span class="aside">'+ts.length+'</span></div>'+
+      '<div class="list">'+ts.slice(0,lim).map(function(t){return termoCard(t,'');}).join('')+'</div>'+moreBtn(key,Math.min(lim,ts.length),ts.length)+'</section>';
+  }
+  return h;
+}
+
+/* ---------- SOBRE ---------- */
+var installEvt=null;
+function isStandalone(){ try{ return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true; }catch(e){ return false; } }
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); installEvt=e; if(st.view==='sobre'&&!st.stack.length) render(); });
+window.addEventListener('appinstalled',function(){ installEvt=null; if(st.view==='sobre') render(); });
+function vSobre(){
+  var h='';
+  if(window.SITE&&!isStandalone()){
+    h+='<section class="sec"><div class="sec-h"><h3>Instalar no celular</h3></div><div class="card fields">'+
+      (installEvt?'<button class="more" style="margin:0;background:var(--hi);border-color:var(--hi);color:var(--hi-ink)" data-install="1">Instalar o app neste aparelho</button>':'')+
+      field('iPhone','No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.')+
+      field('Android','No Chrome, toque no menu ⋮ e depois em “Instalar app” ou “Adicionar à tela inicial”.')+
+      '<p class="note">Instalado, o app abre em tela cheia e funciona sem internet.</p></div></section>';
+  }
+  h+='<p class="note" style="margin-bottom:22px;font-size:15px">Aplicativo desenvolvido pela Câmara Técnica de Terminologia Arquivística. Reúne duas planilhas: a seleção de termos com a árvore de domínio do dicionário, '+
+    'e o diagnóstico da terminologia nas resoluções do Conarq.</p>';
+  h+='<section class="sec"><div class="sec-h"><h3>Equilíbrio dos ramos</h3></div><div class="card" style="padding:6px 14px 14px"><div class="tbl-wrap"><table><thead><tr>'+
+    '<th>Ramo</th><th class="n">Análise</th><th class="n">Acrésc.</th><th class="n">Novos</th><th class="n">Total</th><th class="n">Part.</th></tr></thead><tbody>'+
+    C.equilibrio.filter(function(e){return e[0]!=='Ramo';}).map(function(e){
+      var rn=(e[0].match(/^(\d)/)||[])[1];
+      return '<tr><td>'+(rn?'<i class="dot" style="'+rc(rn)+';margin-right:7px"></i>':'')+esc(e[0])+'</td><td class="n">'+(e[1]+(e[2]||0))+'</td><td class="n">'+e[3]+
+        '</td><td class="n">'+e[4]+'</td><td class="n"><b>'+e[5]+'</b></td><td class="n">'+(e[6]!=null?(e[6]*100).toFixed(1).replace('.',',')+'%':'')+'</td></tr>';
+    }).join('')+'</tbody></table></div>'+C.eqNotas.map(function(t){return '<p class="note" style="margin-top:10px">'+esc(t)+'</p>';}).join('')+'</div></section>';
+  h+='<section class="sec"><div class="sec-h"><h3>Leia-me da seleção de termos</h3></div><div class="card fields">'+C.leiame1.map(function(x){return field(x[0],x[1]);}).join('')+'</div></section>';
+  h+='<section class="sec"><div class="sec-h"><h3>Leia-me do diagnóstico</h3></div><div class="card fields">'+C.leiame2.map(function(x){return field(x[0],x[1]);}).join('')+'</div></section>';
+  var sr=st.open._ret;
+  h+='<section class="sec"><div class="sec-h"><h3>Linhas retiradas</h3><button class="btn-link" data-ret="1">'+(sr?'Ocultar':'Ver as '+C.retiradas.length)+'</button></div>'+
+    (sr?'<div class="facts">'+C.retiradas.map(function(r){
+      return '<div class="fact" style="display:block"><b style="display:block;text-align:left">'+esc(r[0])+'</b><p class="note" style="margin-top:3px">'+esc(r[2])+
+        (r[3]?' Relacionado: <button class="btn-link" data-termo="'+esc(r[3])+'">'+esc(r[3])+'</button>':'')+'</p></div>';
+    }).join('')+'</div>':'<p class="note">'+C.retiradas.length+' registros sem análise foram retirados da Plan1 na limpeza.</p>')+'</section>';
+  return h;
+}
+
+/* ---------- renderização ---------- */
+function viewHtml(){
+  var top=st.stack[st.stack.length-1];
+  if(top) return top.t==='termo'?vTermo(top.k):vRes(top.k);
+  return ({inicio:vInicio,arvore:vArvore,dicionario:vDicionario,termos:vTermos,resolucoes:vResolucoes,busca:vBusca,sobre:vSobre}[st.view]||vInicio)();
+}
+function render(){
+  var top=st.stack[st.stack.length-1];
+  var tools='<button class="icon-btn" data-go="busca" aria-label="Buscar">'+ico('busca')+'</button>'+
+    '<button class="icon-btn" data-go="sobre" aria-label="Sobre esta base">'+ico('info')+'</button>';
+  var title=top?(top.t==='termo'?cap(top.k):'Resolução nº '+top.k):VIEWS[st.view];
+  document.getElementById('topbar').innerHTML=(top||st.view==='busca'||st.view==='sobre'
+      ?'<button class="tb-back" data-back="1" aria-label="Voltar">'+ico('volta')+'</button>':MARK)+
+    '<div class="tb-main"><span class="tb-eyebrow">'+(top?(top.t==='termo'?'Ficha do termo':'Ficha da resolução'):'Terminologia arquivística')+'</span>'+
+    '<span class="tb-title">'+esc(title)+'</span></div>'+tools;
+  var hero=(!top&&st.view==='inicio')?heroInicio():'';
+  document.getElementById('main').innerHTML=hero+'<div class="wrap" id="wrap">'+viewHtml()+'</div>';
+  document.getElementById('tabbar').innerHTML='<div class="side-brand">'+MARK+'<span>Terminologia<br>arquivística</span></div>'+TABS.map(function(t){
+    return '<button data-tab="'+t[0]+'"'+(st.view===t[0]?' aria-current="page"':'')+'><span class="pill">'+ico(t[0])+'</span><span class="lb">'+t[1]+'</span></button>';
+  }).join('');
+}
+function refreshResults(){
+  var wrap=document.getElementById('wrap'); if(!wrap) return;
+  var tmp=document.createElement('div'); tmp.innerHTML=viewHtml();
+  while(wrap.children.length>1) wrap.removeChild(wrap.lastChild);
+  [].slice.call(tmp.children,1).forEach(function(n){wrap.appendChild(n);});
+}
+function scrollToId(id){ var el=document.getElementById(id); if(el) try{ el.scrollIntoView({block:'start'}); window.scrollBy(0,-70);}catch(e){} }
+
+/* ---------- eventos ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b||b.disabled) return;
+  var d=b.dataset;
+  if(d.back){ if(st.stack.length) return back(); return go(st.prev||'inicio'); }
+  if(d.install){ if(installEvt){ installEvt.prompt(); installEvt.userChoice.then(function(){ installEvt=null; render(); }); } return; }
+  if(d.tab) return go(d.tab);
+  if(d.go){ if(d.go==='busca'||d.go==='sobre'){ if(st.view!=='busca'&&st.view!=='sobre') st.prev=st.view; } return go(d.go); }
+  if(d.fakesearch){ st.prev=st.view; go('busca'); var i=document.getElementById('q-busca'); if(i) i.focus(); return; }
+  if(d.ramo){ st.open['R'+d.ramo]=true; go('arvore'); return scrollToId('ramo-'+d.ramo); }
+  if(d.termo) return openTermo(d.termo);
+  if(d.res) return openRes(d.res);
+  if(d.tog){ st.open[d.tog]=!st.open[d.tog]; return render(); }
+  if(d.tree){ var op=d.tree==='open'; C.ramos.forEach(function(r){st.open['R'+r.n]=op;});
+    C.arvore.forEach(function(n){ if(ARVKIDS[n[A_COD]]&&n[A_COD].indexOf('.')>0) st.open[n[A_COD]]=op; }); return render(); }
+  if(d.az) return scrollToId('L-'+d.az);
+  if(d.tbl){ st.tbl[d.tbl]=!st.tbl[d.tbl]; return render(); }
+  if(d.ret){ st.open._ret=!st.open._ret; return render(); }
+  if(d.more){ st.lim[d.more]=(st.lim[d.more]||30)+50; return render(); }
+  if(d.clear){ st.f.ramo=st.f.anel=st.f.enc=st.f.conv=''; st.lim.termos=50; return render(); }
+});
+var qTimer=null;
+document.addEventListener('input',function(e){
+  var k=e.target.dataset&&e.target.dataset.q; if(!k) return;
+  st.q[k]=e.target.value; st.lim[k]=k==='busca'?30:50;
+  clearTimeout(qTimer); qTimer=setTimeout(refreshResults,110);
+});
+document.addEventListener('change',function(e){
+  var k=e.target.dataset&&e.target.dataset.f; if(!k) return;
+  st.f[k]=e.target.value; st.lim.termos=50; render();
+});
+window.addEventListener('hashchange',function(){
+  if(st.skipHash){ st.skipHash=false; return; }
+  var h=location.hash.slice(1); if(h==='painel') h='inicio';
+  if(VIEWS[h]&&(h!==st.view||st.stack.length)){ st.view=h; st.stack=[]; render(); scrollTop(); }
+});
+var h0=location.hash.slice(1); if(h0==='painel') h0='inicio'; if(VIEWS[h0]) st.view=h0;
+render();
+})();
+</script>
